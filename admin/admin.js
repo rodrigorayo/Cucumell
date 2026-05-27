@@ -68,10 +68,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 6. Image Upload Selector and Preview
     const imagePreviewContainer = document.getElementById('image-preview-container');
-    const imageFileInput = document.getElementById('cookie-image-file');
+    const imageFileInput = document.getElementById('galleta-image-file');
     const imagePreview = document.getElementById('image-preview');
     const imagePlaceholder = document.getElementById('image-placeholder');
-    const hiddenImageUrlInput = document.getElementById('cookie-image-url');
+    const hiddenImageUrlInput = document.getElementById('galleta-image-url');
     let selectedImageFile = null;
 
     imagePreviewContainer.addEventListener('click', () => {
@@ -163,8 +163,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 cookiesList.forEach(cookie => {
                     const row = document.createElement('tr');
                     
+                    const displayImgUrl = (cookie.image_url && !cookie.image_url.startsWith('http') && !cookie.image_url.startsWith('/')) 
+                        ? `../${cookie.image_url}` 
+                        : cookie.image_url;
+
                     row.innerHTML = `
-                        <td><img src="${cookie.image_url}" class="table-img" alt="${cookie.name}"></td>
+                        <td><img src="${displayImgUrl}" class="table-img" alt="${cookie.name}"></td>
                         <td style="font-weight: bold;">${cookie.name}</td>
                         <td style="font-style: italic; color: #555;">${cookie.description || ''}</td>
                         <td style="font-family: var(--font-accent); font-weight: bold; color: var(--accent-color);">${cookie.price}</td>
@@ -201,11 +205,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Modal control
-    const modal = document.getElementById('cookie-modal');
+    const modal = document.getElementById('galleta-modal');
     const modalTitle = document.getElementById('modal-title');
-    const cookieForm = document.getElementById('cookie-form');
+    const cookieForm = document.getElementById('galleta-form');
     
-    document.getElementById('add-cookie-btn').addEventListener('click', () => {
+    document.getElementById('add-galleta-btn').addEventListener('click', () => {
         openCookieModal(null); // Add mode
     });
 
@@ -218,19 +222,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         imagePreview.src = '';
         imagePreview.style.display = 'none';
         imagePlaceholder.style.display = 'block';
-        document.getElementById('cookie-id').value = '';
-        document.getElementById('cookie-image-url').value = '';
+        document.getElementById('galleta-id').value = '';
+        document.getElementById('galleta-image-url').value = '';
 
         if (id) {
             modalTitle.textContent = "Editar Galleta";
             const cookie = cookiesList.find(c => c.id === id);
             if (cookie) {
-                document.getElementById('cookie-id').value = cookie.id;
-                document.getElementById('cookie-name').value = cookie.name;
-                document.getElementById('cookie-description').value = cookie.description || '';
-                document.getElementById('cookie-price').value = cookie.price;
-                document.getElementById('cookie-order').value = cookie.order_index;
-                document.getElementById('cookie-image-url').value = cookie.image_url;
+                document.getElementById('galleta-id').value = cookie.id;
+                document.getElementById('galleta-name').value = cookie.name;
+                document.getElementById('galleta-description').value = cookie.description || '';
+                document.getElementById('galleta-price').value = cookie.price;
+                document.getElementById('galleta-order').value = cookie.order_index;
+                document.getElementById('galleta-image-url').value = cookie.image_url;
 
                 imagePreview.src = cookie.image_url;
                 imagePreview.style.display = 'block';
@@ -240,7 +244,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             modalTitle.textContent = "Agregar Nueva Galleta";
             // Suggest next order index
             const maxOrder = cookiesList.reduce((max, c) => c.order_index > max ? c.order_index : max, 0);
-            document.getElementById('cookie-order').value = maxOrder + 1;
+            document.getElementById('galleta-order').value = maxOrder + 1;
         }
 
         modal.style.display = 'flex';
@@ -258,12 +262,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         const spinner = document.getElementById('modal-spinner');
         const btnText = submitBtn.querySelector('span');
 
-        const id = document.getElementById('cookie-id').value;
-        const name = document.getElementById('cookie-name').value.trim();
-        const description = document.getElementById('cookie-description').value.trim();
-        const price = document.getElementById('cookie-price').value.trim();
-        const order_index = parseInt(document.getElementById('cookie-order').value);
-        let image_url = document.getElementById('cookie-image-url').value;
+        const id = document.getElementById('galleta-id').value;
+        const name = document.getElementById('galleta-name').value.trim();
+        const description = document.getElementById('galleta-description').value.trim();
+        const price = document.getElementById('galleta-price').value.trim();
+        const order_index = parseInt(document.getElementById('galleta-order').value);
+        let image_url = document.getElementById('galleta-image-url').value;
 
         // Image validation
         if (!selectedImageFile && !image_url) {

@@ -41,7 +41,7 @@
                             <h2>Catálogo de Galletas</h2>
                             <p>Agrega, edita y ordena las galletas de tu menú digital.</p>
                         </div>
-                        <button id="add-cookie-btn" class="btn btn-primary">+ Agregar Galleta</button>
+                        <button id="add-galleta-btn" class="btn btn-primary">+ Agregar Galleta</button>
                     </div>
 
                     <div class="table-container">
@@ -114,33 +114,33 @@
     </div>
 
     <!-- Add/Edit Cookie Modal -->
-    <div id="cookie-modal" class="modal-overlay" style="display: none;">
+    <div id="galleta-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="modal-title">Agregar Nueva Galleta</h3>
                 <button id="modal-close-btn" class="modal-close">×</button>
             </div>
-            <form id="cookie-form" class="admin-form">
-                <input type="hidden" id="cookie-id">
+            <form id="galleta-form" class="admin-form">
+                <input type="hidden" id="galleta-id">
                 
                 <div class="form-group">
-                    <label for="cookie-name">Nombre de la Galleta</label>
-                    <input type="text" id="cookie-name" required placeholder="Ej. Clásica con Chispas">
+                    <label for="galleta-name">Nombre de la Galleta</label>
+                    <input type="text" id="galleta-name" required placeholder="Ej. Clásica con Chispas">
                 </div>
 
                 <div class="form-group">
-                    <label for="cookie-description">Descripción</label>
-                    <textarea id="cookie-description" rows="3" placeholder="Ej. La favorita de todos, crujiente y llena de chocolate..."></textarea>
+                    <label for="galleta-description">Descripción</label>
+                    <textarea id="galleta-description" rows="3" placeholder="Ej. La favorita de todos, crujiente y llena de chocolate..."></textarea>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="cookie-price">Precio / Presentaciones</label>
-                        <input type="text" id="cookie-price" required placeholder="Ej. Bs. 12.00 o Bs. 5 | Bs. 9">
+                        <label for="galleta-price">Precio / Presentaciones</label>
+                        <input type="text" id="galleta-price" required placeholder="Ej. Bs. 12.00 o Bs. 5 | Bs. 9">
                     </div>
                     <div class="form-group">
-                        <label for="cookie-order">Posición de Visualización (Orden)</label>
-                        <input type="number" id="cookie-order" required min="1" value="1" placeholder="1">
+                        <label for="galleta-order">Posición de Visualización (Orden)</label>
+                        <input type="number" id="galleta-order" required min="1" value="1" placeholder="1">
                         <small class="form-hint">Número menor aparece primero.</small>
                     </div>
                 </div>
@@ -155,8 +155,8 @@
                                 <p>Haz clic para seleccionar o arrastra una imagen</p>
                             </div>
                         </div>
-                        <input type="file" id="cookie-image-file" accept="image/*" style="display: none;">
-                        <input type="hidden" id="cookie-image-url">
+                        <input type="file" id="galleta-image-file" accept="image/*" style="display: none;">
+                        <input type="hidden" id="galleta-image-url">
                     </div>
                 </div>
 
