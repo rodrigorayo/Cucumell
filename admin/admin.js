@@ -265,14 +265,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (cookie.price.includes('|')) {
                     priceTypeSelect.value = 'double';
                     const parts = cookie.price.split('|');
-                    const p1 = parseFloat(parts[0].replace(/[^0-9.]/g, ''));
-                    const p2 = parseFloat(parts[1].replace(/[^0-9.]/g, ''));
+                    const p1 = parseFloat(parts[0].replace("Bs.", "").replace(/[^0-9.]/g, ''));
+                    const p2 = parseFloat(parts[1].replace("Bs.", "").replace(/[^0-9.]/g, ''));
                     priceDouble1Input.value = isNaN(p1) ? '' : p1;
                     priceDouble2Input.value = isNaN(p2) ? '' : p2;
                     priceSingleInput.value = '';
                 } else {
                     priceTypeSelect.value = 'single';
-                    const p = parseFloat(cookie.price.replace(/[^0-9.]/g, ''));
+                    const p = parseFloat(cookie.price.replace("Bs.", "").replace(/[^0-9.]/g, ''));
                     priceSingleInput.value = isNaN(p) ? '' : p;
                     priceDouble1Input.value = '';
                     priceDouble2Input.value = '';
