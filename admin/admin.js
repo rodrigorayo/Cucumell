@@ -183,9 +183,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 cookiesList.forEach(cookie => {
                     const row = document.createElement('tr');
                     
-                    const displayImgUrl = (cookie.image_url && !cookie.image_url.startsWith('http') && !cookie.image_url.startsWith('/')) 
+                    const displayImgUrl = (cookie.image_url && typeof cookie.image_url === 'string' && !cookie.image_url.startsWith('http') && !cookie.image_url.startsWith('/')) 
                         ? `../${cookie.image_url}` 
-                        : cookie.image_url;
+                        : (cookie.image_url || '');
 
                     row.innerHTML = `
                         <td><img src="${displayImgUrl}" class="table-img" alt="${cookie.name}"></td>
@@ -282,9 +282,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                     priceInput2.required = false;
                 }
 
-                imagePreview.src = cookie.image_url;
-                imagePreview.style.display = 'block';
-                imagePlaceholder.style.display = 'none';
+                if (cookie.image_url) {
+                    imagePreview.src = cookie.image_url;
+                    imagePreview.style.display = 'block';
+                    imagePlaceholder.style.display = 'none';
+                } else {
+                    imagePreview.src = '';
+                    imagePreview.style.display = 'none';
+                    imagePlaceholder.style.display = 'block';
+                }
             }
         } else {
             modalTitle.textContent = "Agregar Nueva Galleta";
@@ -435,7 +441,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (dbError) throw dbError;
 
             // Optional: try to clean up image from storage if it belongs to our bucket
-            if (cookie.image_url.includes('/storage/v1/object/public/cookie-images/')) {
+            if (cookie.image_url && typeof cookie.image_url === 'string' && cookie.image_url.includes('/storage/v1/object/public/cookie-images/')) {
                 const pathParts = cookie.image_url.split('/cookie-images/');
                 if (pathParts.length > 1) {
                     const fileName = pathParts[1];
