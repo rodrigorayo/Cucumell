@@ -536,6 +536,8 @@ body.admin-body {
     position: relative;
     padding: 30px;
     animation: slideUp 0.3s cubic-bezier(0.1, 0.8, 0.3, 1);
+    max-height: 90vh; /* No excede la altura de la pantalla */
+    overflow-y: auto; /* Permite scroll vertical si el contenido es alto */
 }
 
 .modal-content::after {
