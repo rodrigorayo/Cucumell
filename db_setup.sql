@@ -76,7 +76,7 @@ CREATE POLICY "Permitir eliminación de fotos a usuarios autenticados" ON storag
 INSERT INTO public.settings (key, value) VALUES
 ('whatsapp_phone', '59175585905'),
 ('instagram_url', 'https://www.instagram.com/cucumell_16/'),
-('whatsapp_message', 'Hola Cucumell! Me gustaría pedir la galleta: *{cookie_name}* (Precio: *{cookie_price}*)'),
+('whatsapp_message', 'Hola Cucumell! Me gustaría realizar un pedido de galletas:'),
 ('about_text', 'Desde el corazón de Santa Cruz de la Sierra, Cucumell trae lo mejor de la repostería artesanal a tu mesa. Usamos ingredientes bolivianos de la más alta calidad para asegurar que cada mordisco te transporte a los mejores momentos en familia.'),
 ('hero_title', 'Sabor Casero,<br>Desde Santa Cruz.'),
 ('hero_subtitle', 'Disfruta el auténtico sabor de galletas hechas con amor en Bolivia.'),

@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         let whatsappPhone = "59175585905"; // Default fallback
         let instagramUrl = "https://www.instagram.com/cucumell_16/"; // Default fallback
-        let whatsappMessageTemplate = "Hola Cucumell! Me gustaría pedir la galleta: *{cookie_name}*";
+        let whatsappMessageTemplate = "Hola Cucumell! Me gustaría realizar un pedido de galletas:";
 
         if (!settingsError && settingsData) {
             const settingsMap = {};
@@ -119,10 +119,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
 
-                    // Format message for WhatsApp (replacing name and price)
-                    const customMsg = whatsappMessageTemplate
-                        .replace('{cookie_name}', cookie.name)
-                        .replace('{cookie_price}', cookie.price);
+                    // Format message for WhatsApp (auto append product name and price for simplicity)
+                    let customMsg = '';
+                    if (whatsappMessageTemplate.includes('{cookie_name}')) {
+                        // Compatibility with old manual placeholder structure
+                        customMsg = whatsappMessageTemplate
+                            .replace('{cookie_name}', cookie.name)
+                            .replace('{cookie_price}', cookie.price);
+                    } else {
+                        // New clean style: auto appends details to default text
+                        customMsg = whatsappMessageTemplate.trim();
+                        customMsg += `\n\n- Galleta: *${cookie.name}*\n- Precio: *${cookie.price}*`;
+                    }
                     const waLink = `https://api.whatsapp.com/send?phone=${whatsappPhone}&text=${encodeURIComponent(customMsg)}`;
 
                     card.innerHTML = `
