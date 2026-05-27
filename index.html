@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cucumell - Galletas Caseras desde Santa Cruz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <header>
+            <nav>
+                <div class="logo">Cucumell</div>
+                <ul class="nav-links">
+                    <li><a href="#home">Inicio</a></li>
+                    <li><a href="#shop">Galletas</a></li>
+                    <li><a href="#about">Nosotros</a></li>
+                    <li><a href="#contact">Contacto</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1>Sabor Casero,<br>Desde Santa Cruz.</h1>
+                <p>Disfruta el auténtico sabor de galletas hechas con amor en Bolivia.</p>
+                <a href="#shop" class="btn btn-primary">Ver Menú</a>
+            </div>
+            <div class="hero-image">
+                <img src="Coockies/coockiesBox1.png" alt="Caja de Galletas Cucumell">
+            </div>
+        </section>
+
+        <section id="shop" class="products">
+            <div class="section-title">
+                <h2>Nuestra Selección</h2>
+                <p>Horneadas diariamente con ingredientes locales.</p>
+            </div>
+            <div id="product-grid" class="product-grid">
+                <!-- Product 1 -->
+                <div class="product-card">
+                    <div class="card-image">
+                        <img src="Coockies/coockie1.png" alt="Galleta Clásica">
+                    </div>
+                    <h3>Clásica con Chispas</h3>
+                    <p>La favorita de todos, crujiente y llena de chocolate.</p>
+                    <div class="price">Bs. 5.00 <span class="price-separator">|</span> Bs. 9.00</div>
+                    <a href="https://api.whatsapp.com/send?phone=59175585905&text=Buenas%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n."
+                        class="btn btn-secondary" target="_blank">Pedir Ahora</a>
+                </div>
+                <!-- Product 2 -->
+                <div class="product-card">
+                    <div class="card-image">
+                        <img src="Coockies/coockie2.png" alt="Galleta Carrot">
+                    </div>
+                    <h3>Carrot</h3>
+                    <p>Galleta de zanahoria, nutritiva y con un toque de canela.</p>
+                    <div class="price">Bs. 12.00</div>
+                    <a href="https://api.whatsapp.com/send?phone=59175585905&text=Buenas%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n."
+                        class="btn btn-secondary" target="_blank">Pedir Ahora</a>
+                </div>
+                <!-- Product 3 -->
+                <div class="product-card">
+                    <div class="card-image">
+                        <img src="Coockies/coockie3.png" alt="Lemon Pie">
+                    </div>
+                    <h3>Lemon Pie</h3>
+                    <p>Refrescante toque de limón con un centro suave.</p>
+                    <div class="price">Bs. 5.00 <span class="price-separator">|</span> Bs. 10.00</div>
+                    <a href="https://api.whatsapp.com/send?phone=59175585905&text=Buenas%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n."
+                        class="btn btn-secondary" target="_blank">Pedir Ahora</a>
+                </div>
+                <!-- Product 4 -->
+                <div class="product-card">
+                    <div class="card-image">
+                        <img src="Coockies/coockie4.png" alt="Especial Cucumell">
+                    </div>
+                    <h3>Especial Cucumell</h3>
+                    <p>Nuestra receta secreta con trozos de nuez.</p>
+                    <div class="price">Bs. 12.00</div>
+                    <a href="https://api.whatsapp.com/send?phone=59175585905&text=Buenas%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n."
+                        class="btn btn-secondary" target="_blank">Pedir Ahora</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <div class="about-content">
+                <h2>Nuestra Historia</h2>
+                <p id="about-text">Desde el corazón de Santa Cruz de la Sierra, Cucumell trae lo mejor de la repostería artesanal a tu
+                    mesa. Usamos ingredientes bolivianos de la más alta calidad para asegurar que cada mordisco te
+                    transporte a los mejores momentos en familia.</p>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-logo">Cucumell</div>
+                <p>&copy; 2024 Cucumell - Santa Cruz, Bolivia. Todos los derechos reservados.</p>
+                <div class="social-links">
+                    <a href="https://www.instagram.com/cucumell_16/" target="_blank" id="footer-instagram">Instagram</a>
+                    <!-- Facebook removed as requested -->
+                    <a href="https://api.whatsapp.com/send?phone=59175585905&text=Buenas%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n."
+                        target="_blank" id="footer-whatsapp">WhatsApp</a>
+                    <span class="footer-separator">|</span>
+                    <a href="admin/" class="admin-link">Administrar</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <!-- Supabase client and config -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

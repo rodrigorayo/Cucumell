@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cucumell - Panel Administrativo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Courier+Prime:wght@400;700&family=Rye&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+    <!-- Main Dashboard Wrapper -->
+    <div class="dashboard-wrapper">
+        <!-- Top Nav / Header -->
+        <header class="dashboard-header">
+            <div class="header-logo-group">
+                <div class="logo">Cucumell</div>
+                <span class="badge">Panel de Control</span>
+            </div>
+            <div class="user-control">
+                <span id="user-email" class="user-email">Cargando...</span>
+                <button id="logout-btn" class="btn btn-secondary btn-sm">Cerrar Sesión</button>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="dashboard-main">
+            <!-- Tabs Menu -->
+            <div class="tab-menu">
+                <button class="tab-btn active" data-tab="catalog-section">📋 Galletas y Catálogo</button>
+                <button class="tab-btn" data-tab="settings-section">⚙️ Configuración de Tienda</button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="tab-content">
+                <!-- Section 1: Catalog Management -->
+                <section id="catalog-section" class="tab-panel active">
+                    <div class="section-header">
+                        <div>
+                            <h2>Catálogo de Galletas</h2>
+                            <p>Agrega, edita y ordena las galletas de tu menú digital.</p>
+                        </div>
+                        <button id="add-cookie-btn" class="btn btn-primary">+ Agregar Galleta</button>
+                    </div>
+
+                    <div class="table-container">
+                        <div id="catalog-loading" class="loading-state">
+                            <div class="spinner-large"></div>
+                            <p>Cargando catálogo...</p>
+                        </div>
+                        <table id="cookies-table" class="admin-table" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <th>Imagen</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Precio</th>
+                                    <th>Orden</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cookies-table-body">
+                                <!-- Dynamic Rows -->
+                            </tbody>
+                        </table>
+                        <div id="catalog-empty" class="empty-state" style="display: none;">
+                            <p>Aún no hay galletas registradas. ¡Haz clic en "+ Agregar Galleta" para subir la primera!</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 2: Store Settings -->
+                <section id="settings-section" class="tab-panel">
+                    <div class="section-header">
+                        <div>
+                            <h2>Configuración de Tienda</h2>
+                            <p>Actualiza la información de contacto y enlaces de redes sociales en tu web.</p>
+                        </div>
+                    </div>
+
+                    <form id="settings-form" class="admin-form compact">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="setting-whatsapp-phone">Teléfono de Pedidos (WhatsApp)</label>
+                                <input type="text" id="setting-whatsapp-phone" required placeholder="Ej. 59175585905">
+                                <small class="form-hint">Escribe el código de país sin el signo '+' ni espacios (ej: 591 para Bolivia).</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="setting-instagram-url">Enlace de Instagram</label>
+                                <input type="url" id="setting-instagram-url" required placeholder="Ej. https://www.instagram.com/nombre">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="setting-whatsapp-message">Plantilla de Mensaje de WhatsApp</label>
+                            <textarea id="setting-whatsapp-message" rows="2" required placeholder="Escribe el mensaje por defecto..."></textarea>
+                            <small class="form-hint">Usa <code>{cookie_name}</code> para que se reemplace automáticamente por el nombre de la galleta elegida.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="setting-about-text">Nuestra Historia (Sección Nosotros)</label>
+                            <textarea id="setting-about-text" rows="5" required placeholder="Escribe la historia de Cucumell aquí..."></textarea>
+                        </div>
+
+                        <div class="settings-actions">
+                            <button type="submit" class="btn btn-primary" id="save-settings-btn">Guardar Cambios</button>
+                            <span id="settings-status" class="status-msg"></span>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Cookie Modal -->
+    <div id="cookie-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Agregar Nueva Galleta</h3>
+                <button id="modal-close-btn" class="modal-close">×</button>
+            </div>
+            <form id="cookie-form" class="admin-form">
+                <input type="hidden" id="cookie-id">
+                
+                <div class="form-group">
+                    <label for="cookie-name">Nombre de la Galleta</label>
+                    <input type="text" id="cookie-name" required placeholder="Ej. Clásica con Chispas">
+                </div>
+
+                <div class="form-group">
+                    <label for="cookie-description">Descripción</label>
+                    <textarea id="cookie-description" rows="3" placeholder="Ej. La favorita de todos, crujiente y llena de chocolate..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cookie-price">Precio / Presentaciones</label>
+                        <input type="text" id="cookie-price" required placeholder="Ej. Bs. 12.00 o Bs. 5 | Bs. 9">
+                    </div>
+                    <div class="form-group">
+                        <label for="cookie-order">Posición de Visualización (Orden)</label>
+                        <input type="number" id="cookie-order" required min="1" value="1" placeholder="1">
+                        <small class="form-hint">Número menor aparece primero.</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Foto de la Galleta</label>
+                    <div class="image-uploader">
+                        <div class="uploader-preview" id="image-preview-container">
+                            <img id="image-preview" src="" alt="Vista previa de foto" style="display: none;">
+                            <div class="uploader-placeholder" id="image-placeholder">
+                                <span class="uploader-icon">📷</span>
+                                <p>Haz clic para seleccionar o arrastra una imagen</p>
+                            </div>
+                        </div>
+                        <input type="file" id="cookie-image-file" accept="image/*" style="display: none;">
+                        <input type="hidden" id="cookie-image-url">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="modal-cancel-btn" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" id="modal-submit-btn" class="btn btn-primary">
+                        <span>Guardar Galleta</span>
+                        <div class="spinner" id="modal-spinner" style="display: none;"></div>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Supabase JS & Config -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../config.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
