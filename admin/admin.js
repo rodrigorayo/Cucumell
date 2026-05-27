@@ -74,31 +74,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     const hiddenImageUrlInput = document.getElementById('galleta-image-url');
     let selectedImageFile = null;
 
-    // Price inputs selection logic
-    const priceTypeSelect = document.getElementById('price-type-select');
-    const singlePriceContainer = document.getElementById('single-price-container');
-    const doublePriceContainer = document.getElementById('double-price-container');
-    const priceSingleInput = document.getElementById('price-single');
-    const priceDouble1Input = document.getElementById('price-double-1');
-    const priceDouble2Input = document.getElementById('price-double-2');
+    // Price inputs selection logic (dynamic addition of second price)
+    const priceInput1 = document.getElementById('price-input-1');
+    const priceInput2 = document.getElementById('price-input-2');
+    const priceContainer2 = document.getElementById('price-container-2');
+    const addSecondPriceBtn = document.getElementById('add-second-price-btn');
+    const removeSecondPriceBtn = document.getElementById('remove-second-price-btn');
 
-    function togglePriceFields() {
-        if (priceTypeSelect.value === 'single') {
-            singlePriceContainer.style.display = 'grid';
-            doublePriceContainer.style.display = 'none';
-            priceSingleInput.required = true;
-            priceDouble1Input.required = false;
-            priceDouble2Input.required = false;
-        } else {
-            singlePriceContainer.style.display = 'none';
-            doublePriceContainer.style.display = 'grid';
-            priceSingleInput.required = false;
-            priceDouble1Input.required = true;
-            priceDouble2Input.required = true;
-        }
-    }
+    addSecondPriceBtn.addEventListener('click', () => {
+        priceContainer2.style.display = 'grid';
+        addSecondPriceBtn.style.display = 'none';
+        priceInput2.required = true;
+    });
 
-    priceTypeSelect.addEventListener('change', togglePriceFields);
+    removeSecondPriceBtn.addEventListener('click', () => {
+        priceContainer2.style.display = 'none';
+        addSecondPriceBtn.style.display = 'inline-flex';
+        priceInput2.value = '';
+        priceInput2.required = false;
+    });
 
     imagePreviewContainer.addEventListener('click', () => {
         imageFileInput.click();
@@ -263,21 +257,30 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 // Parse price string to inputs
                 if (cookie.price.includes('|')) {
-                    priceTypeSelect.value = 'double';
                     const parts = cookie.price.split('|');
                     const p1 = parseFloat(parts[0].replace("Bs.", "").replace(/[^0-9.]/g, ''));
                     const p2 = parseFloat(parts[1].replace("Bs.", "").replace(/[^0-9.]/g, ''));
-                    priceDouble1Input.value = isNaN(p1) ? '' : p1;
-                    priceDouble2Input.value = isNaN(p2) ? '' : p2;
-                    priceSingleInput.value = '';
+                    
+                    // Sort them ascending for representation
+                    const sortedPrices = [p1, p2].sort((a, b) => a - b);
+
+                    priceInput1.value = isNaN(sortedPrices[0]) ? '' : sortedPrices[0];
+                    priceInput2.value = isNaN(sortedPrices[1]) ? '' : sortedPrices[1];
+                    
+                    // Show second price container, hide "+" button
+                    priceContainer2.style.display = 'grid';
+                    addSecondPriceBtn.style.display = 'none';
+                    priceInput2.required = true;
                 } else {
-                    priceTypeSelect.value = 'single';
                     const p = parseFloat(cookie.price.replace("Bs.", "").replace(/[^0-9.]/g, ''));
-                    priceSingleInput.value = isNaN(p) ? '' : p;
-                    priceDouble1Input.value = '';
-                    priceDouble2Input.value = '';
+                    priceInput1.value = isNaN(p) ? '' : p;
+                    priceInput2.value = '';
+                    
+                    // Hide second price container, show "+" button
+                    priceContainer2.style.display = 'none';
+                    addSecondPriceBtn.style.display = 'inline-flex';
+                    priceInput2.required = false;
                 }
-                togglePriceFields();
 
                 imagePreview.src = cookie.image_url;
                 imagePreview.style.display = 'block';
@@ -289,11 +292,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const maxOrder = cookiesList.reduce((max, c) => c.order_index > max ? c.order_index : max, 0);
             document.getElementById('galleta-order').value = maxOrder + 1;
             
-            priceTypeSelect.value = 'single';
-            priceSingleInput.value = '';
-            priceDouble1Input.value = '';
-            priceDouble2Input.value = '';
-            togglePriceFields();
+            priceInput1.value = '';
+            priceInput2.value = '';
+            priceContainer2.style.display = 'none';
+            addSecondPriceBtn.style.display = 'inline-flex';
+            priceInput2.required = false;
         }
 
         modal.style.display = 'flex';
@@ -319,21 +322,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Assemble price string
         let price = '';
-        if (priceTypeSelect.value === 'single') {
-            const val = parseFloat(priceSingleInput.value);
-            if (isNaN(val)) {
+        const p1 = parseFloat(priceInput1.value);
+        const p2Str = priceInput2.value.trim();
+        
+        if (p2Str === '') {
+            if (isNaN(p1)) {
                 alert("Por favor ingresa un precio válido.");
                 return;
             }
-            price = `Bs. ${val.toFixed(2)}`;
+            price = `Bs. ${p1.toFixed(2)}`;
         } else {
-            const val1 = parseFloat(priceDouble1Input.value);
-            const val2 = parseFloat(priceDouble2Input.value);
-            if (isNaN(val1) || isNaN(val2)) {
-                alert("Por favor ingresa ambos precios.");
+            const p2 = parseFloat(p2Str);
+            if (isNaN(p1) || isNaN(p2)) {
+                alert("Por favor ingresa valores numéricos válidos en ambos precios.");
                 return;
             }
-            price = `Bs. ${val1.toFixed(2)} | Bs. ${val2.toFixed(2)}`;
+            // Sort ascending as requested!
+            const sorted = [p1, p2].sort((a, b) => a - b);
+            price = `Bs. ${sorted[0].toFixed(2)} | Bs. ${sorted[1].toFixed(2)}`;
         }
 
         // Image validation
