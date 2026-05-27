@@ -587,7 +587,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     } else {
                         const el = document.getElementById(`setting-${item.key.replace(/_/g, '-')}`);
                         if (el) {
-                            el.value = item.value;
+                            if (item.key === 'hero_title') {
+                                el.value = item.value.replace(/<br\s*\/?>/gi, '\n');
+                            } else {
+                                el.value = item.value;
+                            }
                         }
                     }
                 });

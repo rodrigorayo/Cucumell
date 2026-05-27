@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             if (settingsMap['hero_title']) {
                 const el = document.getElementById('hero-title');
-                if (el) el.innerHTML = settingsMap['hero_title'];
+                if (el) el.innerHTML = settingsMap['hero_title'].replace(/\n/g, '<br>');
             }
             if (settingsMap['hero_subtitle']) {
                 const el = document.getElementById('hero-subtitle');
