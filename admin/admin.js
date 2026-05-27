@@ -453,6 +453,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (err) {
             alert("Error al eliminar: " + err.message);
         }
+    }
+
      // =====================================================================
     // STORE CONFIGURATION
     // =====================================================================
