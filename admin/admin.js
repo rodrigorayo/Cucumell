@@ -74,6 +74,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     const hiddenImageUrlInput = document.getElementById('galleta-image-url');
     let selectedImageFile = null;
 
+    // Price inputs selection logic
+    const priceTypeSelect = document.getElementById('price-type-select');
+    const singlePriceContainer = document.getElementById('single-price-container');
+    const doublePriceContainer = document.getElementById('double-price-container');
+    const priceSingleInput = document.getElementById('price-single');
+    const priceDouble1Input = document.getElementById('price-double-1');
+    const priceDouble2Input = document.getElementById('price-double-2');
+
+    function togglePriceFields() {
+        if (priceTypeSelect.value === 'single') {
+            singlePriceContainer.style.display = 'grid';
+            doublePriceContainer.style.display = 'none';
+            priceSingleInput.required = true;
+            priceDouble1Input.required = false;
+            priceDouble2Input.required = false;
+        } else {
+            singlePriceContainer.style.display = 'none';
+            doublePriceContainer.style.display = 'grid';
+            priceSingleInput.required = false;
+            priceDouble1Input.required = true;
+            priceDouble2Input.required = true;
+        }
+    }
+
+    priceTypeSelect.addEventListener('change', togglePriceFields);
+
     imagePreviewContainer.addEventListener('click', () => {
         imageFileInput.click();
     });
@@ -232,9 +258,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('galleta-id').value = cookie.id;
                 document.getElementById('galleta-name').value = cookie.name;
                 document.getElementById('galleta-description').value = cookie.description || '';
-                document.getElementById('galleta-price').value = cookie.price;
                 document.getElementById('galleta-order').value = cookie.order_index;
                 document.getElementById('galleta-image-url').value = cookie.image_url;
+
+                // Parse price string to inputs
+                if (cookie.price.includes('|')) {
+                    priceTypeSelect.value = 'double';
+                    const parts = cookie.price.split('|');
+                    const p1 = parseFloat(parts[0].replace(/[^0-9.]/g, ''));
+                    const p2 = parseFloat(parts[1].replace(/[^0-9.]/g, ''));
+                    priceDouble1Input.value = isNaN(p1) ? '' : p1;
+                    priceDouble2Input.value = isNaN(p2) ? '' : p2;
+                    priceSingleInput.value = '';
+                } else {
+                    priceTypeSelect.value = 'single';
+                    const p = parseFloat(cookie.price.replace(/[^0-9.]/g, ''));
+                    priceSingleInput.value = isNaN(p) ? '' : p;
+                    priceDouble1Input.value = '';
+                    priceDouble2Input.value = '';
+                }
+                togglePriceFields();
 
                 imagePreview.src = cookie.image_url;
                 imagePreview.style.display = 'block';
@@ -245,6 +288,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Suggest next order index
             const maxOrder = cookiesList.reduce((max, c) => c.order_index > max ? c.order_index : max, 0);
             document.getElementById('galleta-order').value = maxOrder + 1;
+            
+            priceTypeSelect.value = 'single';
+            priceSingleInput.value = '';
+            priceDouble1Input.value = '';
+            priceDouble2Input.value = '';
+            togglePriceFields();
         }
 
         modal.style.display = 'flex';
@@ -265,9 +314,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         const id = document.getElementById('galleta-id').value;
         const name = document.getElementById('galleta-name').value.trim();
         const description = document.getElementById('galleta-description').value.trim();
-        const price = document.getElementById('galleta-price').value.trim();
         const order_index = parseInt(document.getElementById('galleta-order').value);
         let image_url = document.getElementById('galleta-image-url').value;
+
+        // Assemble price string
+        let price = '';
+        if (priceTypeSelect.value === 'single') {
+            const val = parseFloat(priceSingleInput.value);
+            if (isNaN(val)) {
+                alert("Por favor ingresa un precio válido.");
+                return;
+            }
+            price = `Bs. ${val.toFixed(2)}`;
+        } else {
+            const val1 = parseFloat(priceDouble1Input.value);
+            const val2 = parseFloat(priceDouble2Input.value);
+            if (isNaN(val1) || isNaN(val2)) {
+                alert("Por favor ingresa ambos precios.");
+                return;
+            }
+            price = `Bs. ${val1.toFixed(2)} | Bs. ${val2.toFixed(2)}`;
+        }
 
         // Image validation
         if (!selectedImageFile && !image_url) {
@@ -396,9 +463,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (data) {
                 data.forEach(item => {
-                    const el = document.getElementById(`setting-${item.key.replace(/_/g, '-')}`);
-                    if (el) {
-                        el.value = item.value;
+                    if (item.key === 'whatsapp_phone') {
+                        const phone = item.value.trim();
+                        const codes = ["591", "54", "56", "57", "52", "51", "34", "1"];
+                        let matchedCode = "591"; // default
+                        let restNumber = phone;
+                        for (const code of codes) {
+                            if (phone.startsWith(code)) {
+                                matchedCode = code;
+                                restNumber = phone.substring(code.length);
+                                break;
+                            }
+                        }
+                        const codeEl = document.getElementById('setting-whatsapp-code');
+                        const numberEl = document.getElementById('setting-whatsapp-number');
+                        if (codeEl) codeEl.value = matchedCode;
+                        if (numberEl) numberEl.value = restNumber;
+                    } else {
+                        const el = document.getElementById(`setting-${item.key.replace(/_/g, '-')}`);
+                        if (el) {
+                            el.value = item.value;
+                        }
                     }
                 });
             }
@@ -413,7 +498,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         settingsStatus.textContent = "Guardando...";
         settingsStatus.className = "status-msg";
 
-        const phone = document.getElementById('setting-whatsapp-phone').value.trim().replace(/\D/g, ''); // leave only digits
+        const code = document.getElementById('setting-whatsapp-code').value;
+        const num = document.getElementById('setting-whatsapp-number').value.trim().replace(/\D/g, ''); // digits only
+        const phone = code + num;
         const insta = document.getElementById('setting-instagram-url').value.trim();
         const msg = document.getElementById('setting-whatsapp-message').value.trim();
         const about = document.getElementById('setting-about-text').value.trim();
