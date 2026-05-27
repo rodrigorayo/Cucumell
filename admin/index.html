@@ -8,6 +8,43 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Courier+Prime:wght@400;700&family=Rye&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="admin.css">
+    <!-- Supabase JS & Config para Redirección Temprana Segura -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../config.js"></script>
+    <script>
+        (function() {
+            // Ocultar el documento inmediatamente para evitar parpadeo de layout protegido
+            document.documentElement.style.display = 'none';
+
+            const isConfigured = 
+                typeof SUPABASE_URL !== 'undefined' && 
+                typeof SUPABASE_ANON_KEY !== 'undefined' && 
+                SUPABASE_URL.trim() !== "" && 
+                SUPABASE_ANON_KEY.trim() !== "" &&
+                !SUPABASE_URL.includes("YOUR_SUPABASE");
+
+            if (!isConfigured || typeof supabase === 'undefined') {
+                window.location.replace('login.html');
+                return;
+            }
+
+            try {
+                const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                supabaseClient.auth.getSession().then(({ data: { session }, error }) => {
+                    if (error || !session) {
+                        window.location.replace('login.html');
+                    } else {
+                        // Autorizado: Restaurar visualización de la página
+                        document.documentElement.style.display = '';
+                    }
+                }).catch(() => {
+                    window.location.replace('login.html');
+                });
+            } catch (e) {
+                window.location.replace('login.html');
+            }
+        })();
+    </script>
 </head>
 <body class="admin-body">
     <!-- Main Dashboard Wrapper -->
@@ -94,19 +131,19 @@
                                         <option value="51">Perú (+51)</option>
                                         <option value="34">España (+34)</option>
                                     </select>
-                                    <input type="tel" id="setting-whatsapp-number" required placeholder="Ej. 75585905" style="flex: 1;">
+                                    <input type="tel" id="setting-whatsapp-number" required placeholder="Ej. 75585905" value="75585905" style="flex: 1;">
                                 </div>
                                 <small class="form-hint">Selecciona el país e ingresa el número celular sin espacios.</small>
                             </div>
                             <div class="form-group">
                                 <label for="setting-instagram-url">Enlace de Instagram</label>
-                                <input type="url" id="setting-instagram-url" required placeholder="Ej. https://www.instagram.com/nombre">
+                                <input type="url" id="setting-instagram-url" required placeholder="Ej. https://www.instagram.com/nombre" value="https://www.instagram.com/cucumell_16/">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="setting-whatsapp-message">Plantilla de Mensaje de WhatsApp</label>
-                            <textarea id="setting-whatsapp-message" rows="2" required placeholder="Escribe el mensaje por defecto..."></textarea>
+                            <textarea id="setting-whatsapp-message" rows="2" required placeholder="Escribe el mensaje por defecto...">Hola Cucumell! Me gustaría pedir la galleta: *{cookie_name}* (Precio: *{cookie_price}*)</textarea>
                             <small class="form-hint">Usa <code>{cookie_name}</code> y <code>{cookie_price}</code> para que se reemplacen por el nombre y precio del producto.</small>
                         </div>
 
@@ -115,38 +152,54 @@
                             <h3 style="font-size: 1.1rem; text-transform: uppercase; font-family: var(--font-accent); color: var(--accent-color);">Textos y Títulos de la Web</h3>
                         </div>
 
+                        <div class="form-group" style="margin-bottom: 25px;">
+                            <label>Imagen de Portada (Hero)</label>
+                            <div class="image-uploader" id="setting-hero-image-uploader" style="max-width: 400px; margin-top: 5px;">
+                                <div class="uploader-preview" id="setting-hero-image-preview-container">
+                                    <img id="setting-hero-image-preview" src="../Coockies/coockiesBox1.png" alt="Vista previa de portada" style="display: block; max-height: 120px;">
+                                    <div class="uploader-placeholder" id="setting-hero-image-placeholder" style="display: none;">
+                                        <span class="uploader-icon">📷</span>
+                                        <p>Haz clic o arrastra para cambiar la foto de portada</p>
+                                    </div>
+                                </div>
+                                <input type="file" id="setting-hero-image-file" accept="image/*" style="display: none;">
+                                <input type="hidden" id="setting-hero-image-url" value="Coockies/coockiesBox1.png">
+                            </div>
+                            <small class="form-hint">Esta imagen se muestra al inicio de la página principal.</small>
+                        </div>
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="setting-hero-title">Título de Bienvenida (Hero)</label>
-                                <input type="text" id="setting-hero-title" required placeholder="Ej. Sabor Casero,<br>Desde Santa Cruz.">
+                                <input type="text" id="setting-hero-title" required placeholder="Ej. Sabor Casero,<br>Desde Santa Cruz." value="Sabor Casero,<br>Desde Santa Cruz.">
                             </div>
                             <div class="form-group">
                                 <label for="setting-hero-subtitle">Subtítulo de Bienvenida (Hero)</label>
-                                <input type="text" id="setting-hero-subtitle" required placeholder="Ej. Disfruta el auténtico sabor...">
+                                <input type="text" id="setting-hero-subtitle" required placeholder="Ej. Disfruta el auténtico sabor..." value="Disfruta el auténtico sabor de galletas hechas con amor en Bolivia.">
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="setting-catalog-title">Título del Catálogo</label>
-                                <input type="text" id="setting-catalog-title" required placeholder="Ej. Nuestra Selección">
+                                <input type="text" id="setting-catalog-title" required placeholder="Ej. Nuestra Selección" value="Nuestra Selección">
                             </div>
                             <div class="form-group">
                                 <label for="setting-catalog-subtitle">Subtítulo del Catálogo</label>
-                                <input type="text" id="setting-catalog-subtitle" required placeholder="Ej. Horneadas diariamente con ingredientes locales.">
+                                <input type="text" id="setting-catalog-subtitle" required placeholder="Ej. Horneadas diariamente con ingredientes locales." value="Horneadas diariamente con ingredientes locales.">
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="setting-about-title">Título de "Nosotros"</label>
-                                <input type="text" id="setting-about-title" required placeholder="Ej. Nuestra Historia">
+                                <input type="text" id="setting-about-title" required placeholder="Ej. Nuestra Historia" value="Nuestra Historia">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="setting-about-text">Nuestra Historia (Sección Nosotros - Contenido)</label>
-                            <textarea id="setting-about-text" rows="5" required placeholder="Escribe la historia de Cucumell aquí..."></textarea>
+                            <textarea id="setting-about-text" rows="5" required placeholder="Escribe la historia de Cucumell aquí...">Desde el corazón de Santa Cruz de la Sierra, Cucumell trae lo mejor de la repostería artesanal a tu mesa. Usamos ingredientes bolivianos de la más alta calidad para asegurar que cada mordisco te transporte a los mejores momentos en familia.</textarea>
                         </div>
 
                         <div class="settings-actions">

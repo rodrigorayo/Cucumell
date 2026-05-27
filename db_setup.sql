@@ -82,7 +82,8 @@ INSERT INTO public.settings (key, value) VALUES
 ('hero_subtitle', 'Disfruta el auténtico sabor de galletas hechas con amor en Bolivia.'),
 ('catalog_title', 'Nuestra Selección'),
 ('catalog_subtitle', 'Horneadas diariamente con ingredientes locales.'),
-('about_title', 'Nuestra Historia')
+('about_title', 'Nuestra Historia'),
+('hero_image', 'Coockies/coockiesBox1.png')
 ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;
 
 -- Datos por defecto para galletas

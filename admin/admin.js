@@ -8,6 +8,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         SUPABASE_ANON_KEY.trim() !== "" &&
         !SUPABASE_URL.includes("YOUR_SUPABASE");
 
+    const loadingState = document.getElementById('catalog-loading');
+
+    if (typeof supabase === 'undefined') {
+        if (loadingState) {
+            loadingState.innerHTML = `
+                <div style="color: var(--accent-color); padding: 25px; text-align: center; border: 1px solid var(--border-color); background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <h3 style="font-family: var(--font-accent); font-size: 1.3rem; margin-bottom: 10px; color: var(--accent-color);">⚠️ Error de Conexión</h3>
+                    <p style="margin-bottom: 10px;">No se pudo cargar la librería de Supabase desde el servidor CDN.</p>
+                    <p style="font-size: 0.85rem; color: #666;">Por favor, recarga la página presionando <strong>Ctrl + F5</strong> o <strong>Ctrl + Shift + R</strong> para limpiar la caché de tu navegador. Si el problema persiste, es posible que la conexión a internet sea inestable.</p>
+                </div>
+            `;
+        }
+        alert("No se pudo conectar con Supabase. Por favor revisa tu conexión o limpia la caché de tu navegador (Ctrl+F5).");
+        return;
+    }
+
     if (!isConfigured) {
         alert("Supabase no está configurado. Por favor edita config.js.");
         window.location.href = 'login.html';
@@ -73,6 +89,67 @@ document.addEventListener('DOMContentLoaded', async () => {
     const imagePlaceholder = document.getElementById('image-placeholder');
     const hiddenImageUrlInput = document.getElementById('galleta-image-url');
     let selectedImageFile = null;
+
+    // Hero image uploader elements
+    const heroImageUploader = document.getElementById('setting-hero-image-uploader');
+    const heroImagePreviewContainer = document.getElementById('setting-hero-image-preview-container');
+    const heroImageFileInput = document.getElementById('setting-hero-image-file');
+    const heroImagePreview = document.getElementById('setting-hero-image-preview');
+    const heroImagePlaceholder = document.getElementById('setting-hero-image-placeholder');
+    const hiddenHeroImageUrlInput = document.getElementById('setting-hero-image-url');
+    let selectedHeroImageFile = null;
+
+    if (heroImageUploader && heroImageFileInput) {
+        heroImageUploader.addEventListener('click', () => {
+            heroImageFileInput.click();
+        });
+
+        heroImageFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                selectedHeroImageFile = file;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    heroImagePreview.src = event.target.result;
+                    heroImagePreview.style.display = 'block';
+                    heroImagePlaceholder.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Drag and drop for hero image
+        heroImageUploader.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            heroImageUploader.style.borderColor = 'var(--accent-color)';
+            heroImageUploader.style.background = '#faf7f2';
+        });
+
+        heroImageUploader.addEventListener('dragleave', () => {
+            heroImageUploader.style.borderColor = 'var(--secondary-color)';
+            heroImageUploader.style.background = '#fff';
+        });
+
+        heroImageUploader.addEventListener('drop', (e) => {
+            e.preventDefault();
+            heroImageUploader.style.borderColor = 'var(--secondary-color)';
+            heroImageUploader.style.background = '#fff';
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                heroImageFileInput.files = e.dataTransfer.files;
+                selectedHeroImageFile = file;
+                
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    heroImagePreview.src = event.target.result;
+                    heroImagePreview.style.display = 'block';
+                    heroImagePlaceholder.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
 
     // Price inputs selection logic (dynamic addition of second price)
     const priceInput1 = document.getElementById('price-input-1');
@@ -497,6 +574,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                         const numberEl = document.getElementById('setting-whatsapp-number');
                         if (codeEl) codeEl.value = matchedCode;
                         if (numberEl) numberEl.value = restNumber;
+                    } else if (item.key === 'hero_image') {
+                        if (hiddenHeroImageUrlInput) hiddenHeroImageUrlInput.value = item.value;
+                        if (heroImagePreview && item.value) {
+                            const displayImgUrl = (item.value && typeof item.value === 'string' && !item.value.startsWith('http') && !item.value.startsWith('/')) 
+                                ? `../${item.value}` 
+                                : item.value;
+                            heroImagePreview.src = displayImgUrl;
+                            heroImagePreview.style.display = 'block';
+                            if (heroImagePlaceholder) heroImagePlaceholder.style.display = 'none';
+                        }
                     } else {
                         const el = document.getElementById(`setting-${item.key.replace(/_/g, '-')}`);
                         if (el) {
@@ -515,6 +602,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         settingsStatus.textContent = "Guardando...";
         settingsStatus.className = "status-msg";
+        
+        const saveBtn = document.getElementById('save-settings-btn');
+        if (saveBtn) saveBtn.disabled = true;
 
         const code = document.getElementById('setting-whatsapp-code').value;
         const num = document.getElementById('setting-whatsapp-number').value.trim().replace(/\D/g, ''); // digits only
@@ -528,20 +618,46 @@ document.addEventListener('DOMContentLoaded', async () => {
         const catalogTitle = document.getElementById('setting-catalog-title').value.trim();
         const catalogSubtitle = document.getElementById('setting-catalog-subtitle').value.trim();
         const aboutTitle = document.getElementById('setting-about-title').value.trim();
-
-        const updates = [
-            { key: 'whatsapp_phone', value: phone },
-            { key: 'instagram_url', value: insta },
-            { key: 'whatsapp_message', value: msg },
-            { key: 'about_text', value: about },
-            { key: 'hero_title', value: heroTitle },
-            { key: 'hero_subtitle', value: heroSubtitle },
-            { key: 'catalog_title', value: catalogTitle },
-            { key: 'catalog_subtitle', value: catalogSubtitle },
-            { key: 'about_title', value: aboutTitle }
-        ];
+        
+        let heroImageUrl = hiddenHeroImageUrlInput ? hiddenHeroImageUrlInput.value : '';
 
         try {
+            // Upload new hero image if selected
+            if (selectedHeroImageFile) {
+                const ext = selectedHeroImageFile.name.split('.').pop();
+                const cleanName = `hero-${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${ext}`;
+
+                const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                    .from('cookie-images')
+                    .upload(cleanName, selectedHeroImageFile);
+
+                if (uploadError) {
+                    throw new Error("Error al subir la imagen de portada: " + uploadError.message);
+                }
+
+                // Retrieve public URL
+                const { data: { publicUrl } } = supabaseClient.storage
+                    .from('cookie-images')
+                    .getPublicUrl(cleanName);
+                
+                heroImageUrl = publicUrl;
+                if (hiddenHeroImageUrlInput) hiddenHeroImageUrlInput.value = heroImageUrl;
+                selectedHeroImageFile = null; // Reset selection after success
+            }
+
+            const updates = [
+                { key: 'whatsapp_phone', value: phone },
+                { key: 'instagram_url', value: insta },
+                { key: 'whatsapp_message', value: msg },
+                { key: 'about_text', value: about },
+                { key: 'hero_title', value: heroTitle },
+                { key: 'hero_subtitle', value: heroSubtitle },
+                { key: 'catalog_title', value: catalogTitle },
+                { key: 'catalog_subtitle', value: catalogSubtitle },
+                { key: 'about_title', value: aboutTitle },
+                { key: 'hero_image', value: heroImageUrl }
+            ];
+
             const { error } = await supabaseClient
                 .from('settings')
                 .upsert(updates);
@@ -558,6 +674,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (err) {
             settingsStatus.textContent = "✗ Error: " + err.message;
             settingsStatus.className = "status-msg error";
+        } finally {
+            if (saveBtn) saveBtn.disabled = false;
         }
     });
 

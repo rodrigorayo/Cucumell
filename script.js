@@ -72,6 +72,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const el = document.getElementById('hero-subtitle');
                 if (el) el.textContent = settingsMap['hero_subtitle'];
             }
+            if (settingsMap['hero_image']) {
+                const el = document.getElementById('hero-img');
+                if (el) el.src = settingsMap['hero_image'];
+            }
             if (settingsMap['catalog_title']) {
                 const el = document.getElementById('catalog-title');
                 if (el) el.textContent = settingsMap['catalog_title'];
