@@ -94,7 +94,7 @@
                                         <option value="51">Perú (+51)</option>
                                         <option value="34">España (+34)</option>
                                     </select>
-                                    <input type="number" id="setting-whatsapp-number" required placeholder="Ej. 75585905" style="flex: 1;">
+                                    <input type="tel" id="setting-whatsapp-number" required placeholder="Ej. 75585905" style="flex: 1;">
                                 </div>
                                 <small class="form-hint">Selecciona el país e ingresa el número celular sin espacios.</small>
                             </div>
@@ -107,11 +107,45 @@
                         <div class="form-group">
                             <label for="setting-whatsapp-message">Plantilla de Mensaje de WhatsApp</label>
                             <textarea id="setting-whatsapp-message" rows="2" required placeholder="Escribe el mensaje por defecto..."></textarea>
-                            <small class="form-hint">Usa <code>{cookie_name}</code> para que se reemplace automáticamente por el nombre de la galleta elegida.</small>
+                            <small class="form-hint">Usa <code>{cookie_name}</code> y <code>{cookie_price}</code> para que se reemplacen por el nombre y precio del producto.</small>
+                        </div>
+
+                        <!-- Títulos y Textos Editables de la Web -->
+                        <div style="margin-top: 30px; margin-bottom: 15px; border-bottom: 1px dashed var(--secondary-color); padding-bottom: 10px;">
+                            <h3 style="font-size: 1.1rem; text-transform: uppercase; font-family: var(--font-accent); color: var(--accent-color);">Textos y Títulos de la Web</h3>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="setting-hero-title">Título de Bienvenida (Hero)</label>
+                                <input type="text" id="setting-hero-title" required placeholder="Ej. Sabor Casero,<br>Desde Santa Cruz.">
+                            </div>
+                            <div class="form-group">
+                                <label for="setting-hero-subtitle">Subtítulo de Bienvenida (Hero)</label>
+                                <input type="text" id="setting-hero-subtitle" required placeholder="Ej. Disfruta el auténtico sabor...">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="setting-catalog-title">Título del Catálogo</label>
+                                <input type="text" id="setting-catalog-title" required placeholder="Ej. Nuestra Selección">
+                            </div>
+                            <div class="form-group">
+                                <label for="setting-catalog-subtitle">Subtítulo del Catálogo</label>
+                                <input type="text" id="setting-catalog-subtitle" required placeholder="Ej. Horneadas diariamente con ingredientes locales.">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="setting-about-title">Título de "Nosotros"</label>
+                                <input type="text" id="setting-about-title" required placeholder="Ej. Nuestra Historia">
+                            </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="setting-about-text">Nuestra Historia (Sección Nosotros)</label>
+                            <label for="setting-about-text">Nuestra Historia (Sección Nosotros - Contenido)</label>
                             <textarea id="setting-about-text" rows="5" required placeholder="Escribe la historia de Cucumell aquí..."></textarea>
                         </div>
 

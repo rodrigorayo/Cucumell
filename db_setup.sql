@@ -76,8 +76,13 @@ CREATE POLICY "Permitir eliminación de fotos a usuarios autenticados" ON storag
 INSERT INTO public.settings (key, value) VALUES
 ('whatsapp_phone', '59175585905'),
 ('instagram_url', 'https://www.instagram.com/cucumell_16/'),
-('whatsapp_message', 'Hola Cucumell! Me gustaría pedir la galleta: *{cookie_name}*'),
-('about_text', 'Desde el corazón de Santa Cruz de la Sierra, Cucumell trae lo mejor de la repostería artesanal a tu mesa. Usamos ingredientes bolivianos de la más alta calidad para asegurar que cada mordisco te transporte a los mejores momentos en familia.')
+('whatsapp_message', 'Hola Cucumell! Me gustaría pedir la galleta: *{cookie_name}* (Precio: *{cookie_price}*)'),
+('about_text', 'Desde el corazón de Santa Cruz de la Sierra, Cucumell trae lo mejor de la repostería artesanal a tu mesa. Usamos ingredientes bolivianos de la más alta calidad para asegurar que cada mordisco te transporte a los mejores momentos en familia.'),
+('hero_title', 'Sabor Casero,<br>Desde Santa Cruz.'),
+('hero_subtitle', 'Disfruta el auténtico sabor de galletas hechas con amor en Bolivia.'),
+('catalog_title', 'Nuestra Selección'),
+('catalog_subtitle', 'Horneadas diariamente con ingredientes locales.'),
+('about_title', 'Nuestra Historia')
 ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;
 
 -- Datos por defecto para galletas

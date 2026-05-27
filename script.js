@@ -64,6 +64,26 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (settingsMap['whatsapp_message']) {
                 whatsappMessageTemplate = settingsMap['whatsapp_message'];
             }
+            if (settingsMap['hero_title']) {
+                const el = document.getElementById('hero-title');
+                if (el) el.innerHTML = settingsMap['hero_title'];
+            }
+            if (settingsMap['hero_subtitle']) {
+                const el = document.getElementById('hero-subtitle');
+                if (el) el.textContent = settingsMap['hero_subtitle'];
+            }
+            if (settingsMap['catalog_title']) {
+                const el = document.getElementById('catalog-title');
+                if (el) el.textContent = settingsMap['catalog_title'];
+            }
+            if (settingsMap['catalog_subtitle']) {
+                const el = document.getElementById('catalog-subtitle');
+                if (el) el.textContent = settingsMap['catalog_subtitle'];
+            }
+            if (settingsMap['about_title']) {
+                const el = document.getElementById('about-title');
+                if (el) el.textContent = settingsMap['about_title'];
+            }
         }
 
         // Update footer WhatsApp link
@@ -95,8 +115,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
 
-                    // Format message for WhatsApp
-                    const customMsg = whatsappMessageTemplate.replace('{cookie_name}', cookie.name);
+                    // Format message for WhatsApp (replacing name and price)
+                    const customMsg = whatsappMessageTemplate
+                        .replace('{cookie_name}', cookie.name)
+                        .replace('{cookie_price}', cookie.price);
                     const waLink = `https://api.whatsapp.com/send?phone=${whatsappPhone}&text=${encodeURIComponent(customMsg)}`;
 
                     card.innerHTML = `

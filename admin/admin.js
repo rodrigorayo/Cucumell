@@ -447,14 +447,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (err) {
             alert("Error al eliminar: " + err.message);
         }
-    }
-
-
-    // =====================================================================
+     // =====================================================================
     // STORE CONFIGURATION
     // =====================================================================
     const settingsForm = document.getElementById('settings-form');
     const settingsStatus = document.getElementById('settings-status');
+    const whatsappNumInput = document.getElementById('setting-whatsapp-number');
+
+    if (whatsappNumInput) {
+        whatsappNumInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, ''); // Strip non-digits
+        });
+    }
 
     async function loadSettings() {
         try {
@@ -510,12 +514,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         const insta = document.getElementById('setting-instagram-url').value.trim();
         const msg = document.getElementById('setting-whatsapp-message').value.trim();
         const about = document.getElementById('setting-about-text').value.trim();
+        
+        const heroTitle = document.getElementById('setting-hero-title').value.trim();
+        const heroSubtitle = document.getElementById('setting-hero-subtitle').value.trim();
+        const catalogTitle = document.getElementById('setting-catalog-title').value.trim();
+        const catalogSubtitle = document.getElementById('setting-catalog-subtitle').value.trim();
+        const aboutTitle = document.getElementById('setting-about-title').value.trim();
 
         const updates = [
             { key: 'whatsapp_phone', value: phone },
             { key: 'instagram_url', value: insta },
             { key: 'whatsapp_message', value: msg },
-            { key: 'about_text', value: about }
+            { key: 'about_text', value: about },
+            { key: 'hero_title', value: heroTitle },
+            { key: 'hero_subtitle', value: heroSubtitle },
+            { key: 'catalog_title', value: catalogTitle },
+            { key: 'catalog_subtitle', value: catalogSubtitle },
+            { key: 'about_title', value: aboutTitle }
         ];
 
         try {
